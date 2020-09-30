@@ -1,0 +1,54 @@
+%% Samla in mätdata till projektet - UTGÅNGSKARAKTERISTIK
+
+% Vgs = 1.5V
+
+Vds15 = [0.05 0.07 0.1 0.13 0.16 0.18 0.2 0.23 0.25 0.3 0.35 0.4 1 2 4 6];
+Ids15 = [0.034 0.044 0.057 0.068 0.076 0.080 0.083 0.086 0.088 0.091 0.092 0.093 0.096 0.097 0.099 0.100]*1e-3;
+
+% Vgs = 3V
+
+Vds3 = [0.05 0.07 0.1 0.14 0.18 0.23 0.28 0.35 0.42 0.50 0.55 0.60 0.65 0.70 0.80 0.9 1 1.15 1.30 2 4 6];
+Ids3 = [0.141 0.194 0.270 0.371 0.468 0.582 0.692 0.833 0.964 1.100 1.173 0.124 1.306 1.363 1.460 1.535 1.590 1.645 1.676 1.778 1.822 1.846]*1e-3;
+
+% Vgs = 4.5V
+
+Vds45 = [0.05 0.07 0.1 0.13 0.16 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.60 0.7 0.8 0.9 1 1.1 1.2 1.30 1.4 1.5 1.6 1.7 1.8 1.9 2.0 4 6];
+Ids45 = [0.214 0.294 0.414 0.534 0.651 0.806 0.996 1.180 1.360 1.536 1.707 1.872 2.190 2.490 2.771 3.030 3.271 3.492 3.693 3.872 4.033 4.174 4.296 4.400 4.489 4.557 4.615 4.894 4.956]*1e-3;
+
+K = 4.33e-4; VT = 0.95;
+figure(2)
+plot(Vds15,Ids15,'*'), hold on
+plot(Vds3,Ids3,'*r')
+plot(Vds45,Ids45,'*k')
+
+Vgs = 1.5;
+Vds1 = linspace(0, Vgs-VT);
+Vds2 = linspace(Vgs-VT,10);
+Id_teori1=K.*(2.*(Vgs-VT).*Vds1 - Vds1.^2);
+Id_teori2=K.*(Vgs-VT).^2;
+
+plot(Vds1, Id_teori1,'b')
+plot([Vgs-VT 10], [Id_teori2 Id_teori2],'b')
+
+Vgs = 3;
+Vds1 = linspace(0, Vgs-VT);
+Id_teori1=K.*(2.*(Vgs-VT).*Vds1 - Vds1.^2);
+Id_teori2=K.*(Vgs-VT).^2;
+
+plot(Vds1, Id_teori1,'r')
+plot([Vgs-VT 10], [Id_teori2 Id_teori2],'r')
+
+Vgs = 4.5;
+Vds1 = linspace(0, Vgs-VT);
+Id_teori1=K.*(2.*(Vgs-VT).*Vds1 - Vds1.^2);
+Id_teori2=K.*(Vgs-VT).^2;
+
+plot(Vds1, Id_teori1,'k')
+plot([Vgs-VT 10], [Id_teori2 Id_teori2],'k')
+
+xlabel('V_d_s (V)')
+ylabel('I_d_s (A)')
+legend('V_g_s = 1.5V','V_g_s = 3V','V_g_s = 4.5V','Location','NorthEast')
+%title('Utgångskarakteristik med gatespänningen som parameter')
+xlim([0 10])
+ylim([0 6e-3])
