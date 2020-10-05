@@ -1,11 +1,11 @@
-%% Kör skriptet med "Run" eller F5
+%% KÃ¶r skriptet med "Run" eller F5
 
-close all % stänger alla öppna figurer
+close all % stÃ¤nger alla Ã¶ppna figurer
 clear all % tar bort alla definierade variabler
 clc       % rensar "Command Window"
 
 
-%% Första mätningen - bekanta er med transistorn
+%% FÃ¶rsta mÃ¤tningen - bekanta er med transistorn
 
 Vds = [1];
 Ids = [1];
@@ -14,9 +14,9 @@ figure(1)
 plot(Vds,Ids,'*')
 xlabel('V_d_s (V)')
 ylabel('I_d_s (A)')
-title('Utgångskarakteristik för V_g_s = xx V')
+title('UtgÃ¥ngskarakteristik fÃ¶r V_g_s = xx V')
 
-%% Samla in mätdata till projektet - UTGÅNGSKARAKTERISTIK
+%% Samla in mÃ¤tdata till projektet - UTGÃ…NGSKARAKTERISTIK
 
 % Vgs = 1.5V
 
@@ -33,19 +33,47 @@ Ids3 = [0.141 0.194 0.270 0.371 0.468 0.582 0.692 0.833 0.964 1.100 1.173 0.124 
 Vds45 = [0.05 0.07 0.1 0.13 0.16 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.60 0.7 0.8 0.9 1 1.1 1.2 1.30 1.4 1.5 1.6 1.7 1.8 1.9 2.0 4 6];
 Ids45 = [0.214 0.294 0.414 0.534 0.651 0.806 0.996 1.180 1.360 1.536 1.707 1.872 2.190 2.490 2.771 3.030 3.271 3.492 3.693 3.872 4.033 4.174 4.296 4.400 4.489 4.557 4.615 4.894 4.956]*1e-3;
 
+alpha=1; %substrateffekten
+theta1=0; theta2=0; %mobility roll-off
+K = 4.33e-4; VT = 0.95;
 figure(2)
-plot(Vds15,Ids15,'*')
-hold on
+plot(Vds15,Ids15,'*'), hold on
 plot(Vds3,Ids3,'*r')
 plot(Vds45,Ids45,'*k')
+
+Vgs = 1.5;
+Vds1 = linspace(0, (Vgs-VT)/alpha);
+Vds2 = linspace((Vgs-VT)/alpha,10);
+Id_teori1=(K/(1+theta1.*(Vgs-VT)+theta2.*(Vgs-VT).^2)).*(2.*(Vgs-VT).*Vds1 - alpha*Vds1.^2);
+Id_teori2=((K/(1+theta1.*(Vgs-VT)+theta2.*(Vgs-VT).^2))/alpha).*(Vgs-VT).^2;
+
+plot(Vds1, Id_teori1,'b')
+plot([(Vgs-VT)/alpha 10], [Id_teori2 Id_teori2],'b')
+
+Vgs = 3;
+Vds1 = linspace(0, (Vgs-VT)/alpha);
+Id_teori1=(K/(1+theta1.*(Vgs-VT)+theta2.*(Vgs-VT).^2)).*(2.*(Vgs-VT).*Vds1 - alpha*Vds1.^2);
+Id_teori2=((K/(1+theta1.*(Vgs-VT)+theta2.*(Vgs-VT).^2))/alpha).*(Vgs-VT).^2;
+
+plot(Vds1, Id_teori1,'r')
+plot([(Vgs-VT)/alpha 10], [Id_teori2 Id_teori2],'r')
+
+Vgs = 4.5;
+Vds1 = linspace(0, (Vgs-VT)/alpha);
+Id_teori1=(K/(1+theta1.*(Vgs-VT)+theta2.*(Vgs-VT).^2)).*(2.*(Vgs-VT).*Vds1 - alpha*Vds1.^2);
+Id_teori2=((K/(1+theta1.*(Vgs-VT)+theta2.*(Vgs-VT).^2))/alpha).*(Vgs-VT).^2;
+
+plot(Vds1, Id_teori1,'k')
+plot([(Vgs-VT)/alpha 10], [Id_teori2 Id_teori2],'k')
+
 xlabel('V_d_s (V)')
 ylabel('I_d_s (A)')
 legend('V_g_s = 1.5V','V_g_s = 3V','V_g_s = 4.5V','Location','NorthEast')
-title('Utgångskarakteristik med gatespänningen som parameter')
+%title('UtgÃ¥ngskarakteristik med gatespÃ¤nningen som parameter')
 xlim([0 10])
 ylim([0 6e-3])
 
-%% Samla in mätdata till projektet - ÖVERFÖRINGSKARAKTERISTIK
+%% Samla in mÃ¤tdata till projektet - Ã–VERFÃ–RINGSKARAKTERISTIK
 
 
 % Vds = 0.05V
@@ -64,31 +92,39 @@ Vgs10 = [0 0.2 0.4 0.6 0.8 1 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0 3.2 3.4 3.6
 Ids10 = [0 0 0 0 0 0.001 0.024 0.077 0.150 0.293 0.479 0.721 0.922 1.187 1.467 1.855 2.229 2.555 3.042]*1e-3;
 
 figure(3)
-plot(Vgs005,Ids005,'*')
+subplot(1,2,1)
+plot(Vgs005,Ids005,'*b')
 hold on
 plot(Vgs01,Ids01,'*r')
 plot(Vgs10,Ids10,'*k')
 xlabel('V_g_s (V)')
 ylabel('I_d_s (A)')
 legend('V_d_s = 0.05V','V_d_s = 0.1V','V_d_s = 10V','Location','NorthEast')
-title('Överföringskarakteristik med drainspänningen som parameter')
-xlim([0 5])
-ylim([0 6e-3])
-
-%% Samla in mätdata till projektet - SUBTRÖSKELOMRÅDET
+title('UppmÃ¤tt data')
+xlim([0 4])
+ylim([0 4e-3])
+subplot(1,2,2)
+plot(Vgs10,sqrt(Ids10),'*k'), hold on
+plot([0.95 3.6],[0 0.05515],'r--')
+title('LinjÃ¤r modell')
+xlabel('V_g_s (V)')
+ylabel('$\sqrt{I_{DS}}$ $(A^{1/2})$','Interpreter','latex','FontSize',14)
+%% Samla in mÃ¤tdata till projektet - SUBTRÃ–SKELOMRÃ…DET
 
 Vgssub = [0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5];
 Idssub = [0.0015 0.0039 0.0265 0.1175 0.2555 2.9 9.1 24.8 64.9 101.1 105]*1e-6;
 
-figure(4)
+figure(5)
 semilogy(Vgs10,Ids10,'b*')
 hold on
 semilogy(Vgssub,Idssub,'r*')
+Vgs=linspace(0,3.6);
+Ioff=10^-12; s=160e-3;
+Id=Ioff.*10.^(Vgs./s);
+semilogy(Vgs,Id,'k')
 xlabel('V_g_s (V)')
 ylabel('I_d_s (A)')
 xlim([0 5])
 ylim([1e-15 1e-2])
-legend('Stark inversion V_d_s = 10V','Subströskelområdet V_d_s = 10V','Location','SouthEast')
-title('Subtröskelkarakteristik vid V_d_s = 10V för MOSFET')
-
-
+legend('Stark inversion V_d_s = 10V','SubstrÃ¶skelomrÃ¥det V_d_s = 10V','Location','SouthEast')
+title('SubtrÃ¶skelkarakteristik vid V_d_s = 10V fÃ¶r MOSFET')
